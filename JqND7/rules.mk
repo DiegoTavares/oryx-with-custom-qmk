@@ -10,5 +10,5 @@ TAP_DANCE_ENABLE = yes
 SPACE_CADET_ENABLE = no
 
 # Custom rules
-KEY_OVERRIDE_ENABLED = yes
+KEY_OVERRIDE_ENABLE = yes
 SRC += features/achordion.c
