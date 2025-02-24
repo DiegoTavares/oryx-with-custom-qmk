@@ -335,7 +335,7 @@ __attribute__((weak)) bool achordion_chord(uint16_t tap_hold_keycode,
                                            keyrecord_t* tap_hold_record,
                                            uint16_t other_keycode,
                                            keyrecord_t* other_record) {
-  switch (tab_hold_keycode) {
+  switch (tap_hold_keycode) {
       case KC_ESCAPE:
         return true;
         break;
