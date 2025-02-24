@@ -246,7 +246,7 @@ bool process_achordion(uint16_t keycode, keyrecord_t* record) {
     // chording multiple home row modifiers will work, but let's our logic
     // consider simply a single tap-hold key as "active" at a time.
     //
-    // Otherwise, we call `achordion_chord()` to determine whether to settle the
+    // Otherwise, we call achordion_chord()` to determine whether to settle the
     // tap-hold key as tapped vs. held. We implement the tap or hold by plumbing
     // events back into the handling pipeline so that QMK features and other
     // user code can see them. This is done by calling `process_record()`, which
@@ -335,12 +335,27 @@ __attribute__((weak)) bool achordion_chord(uint16_t tap_hold_keycode,
                                            keyrecord_t* tap_hold_record,
                                            uint16_t other_keycode,
                                            keyrecord_t* other_record) {
+  switch (tab_hold_keycode) {
+      case KC_ESCAPE:
+        return true;
+        break;
+      case KC_ENTER:
+        return true;
+        break;
+      case KC_A:
+        if (other_keycode == KC_T || other_keycode == KC_W || other_keycode == KC_C || other_keycode == KC_V) return true;
+  }
+
+  // Also allow same-hand holds when the other key is in the rows below the
+  // alphas. I need the `% (MATRIX_ROWS / 2)` because my keyboard is split.
+  if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 4) { return true; }
+
   return achordion_opposite_hands(tap_hold_record, other_record);
 }
 
 // By default, the timeout is 1000 ms for all keys.
 __attribute__((weak)) uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
-  return 1000;
+  return 400;
 }
 
 // By default, Shift and Ctrl mods are eager, and Alt and GUI are not.
