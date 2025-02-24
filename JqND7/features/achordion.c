@@ -351,8 +351,8 @@ __attribute__((weak)) bool achordion_chord(uint16_t tap_hold_keycode,
   // Also allow same-hand holds when the other key is in the rows below the
   // alphas. I need the `% (MATRIX_ROWS / 2)` because my keyboard is split.
   if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 4 ||
-      tap_hold_keycode->event.key.col == 0 ||
-      tap_hold_keycode->event.key.row > 3) {
+      tap_hold_record->event.key.col == 0 ||
+      tap_hold_record->event.key.row > 3) {
        return true;
   }
 
