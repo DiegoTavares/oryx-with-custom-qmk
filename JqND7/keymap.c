@@ -1,5 +1,6 @@
 #include QMK_KEYBOARD_H
 #include "version.h"
+#include "features/achordion.h"
 #define MOON_LED_LEVEL LED_LEVEL
 #define ML_SAFE_RANGE SAFE_RANGE
 
@@ -66,7 +67,7 @@ void set_layer_color(int layer) {
     } else {
         RGB rgb = hsv_to_rgb( hsv );
         float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
-        rgb_matrix_set_color( i, f * rgb.r, f * rgb.g, f * rgb.b );   
+        rgb_matrix_set_color( i, f * rgb.r, f * rgb.g, f * rgb.b );
     }
   }
 }
@@ -89,6 +90,9 @@ bool rgb_matrix_indicators_user(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  // Process Achordion before remaining tasks
+  if (!process_achordion(keycode, record)) { return false; }
+
   switch (keycode) {
     case ST_MACRO_0:
     if (record->event.pressed) {
@@ -235,3 +239,21 @@ tap_dance_action_t tap_dance_actions[] = {
         [DANCE_1] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, dance_1_finished, dance_1_reset),
         [DANCE_2] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_2, dance_2_finished, dance_2_reset),
 };
+
+// Custom QMK here
+const key_override_t delete_key_override =
+    ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL);
+
+const key_override_t **key_overrides = (const key_override_t *[]){
+	&delete_key_override,
+	NULL
+};
+
+// Achordion
+void housekeeping_task_user(void) {
+  achordion_task();
+}
+
+void matrix_scan_user(void) {
+    achordion_task();
+}
